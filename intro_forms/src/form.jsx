@@ -8,7 +8,7 @@ function Form(props) {
         phoneType: "",
         staff: "",
         bio: "",
-        notifications: ""
+        notifications: false
     })
 
     const [errors, setErrors] = useState([]);
