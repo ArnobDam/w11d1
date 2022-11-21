@@ -44,13 +44,35 @@ function Form(props) {
     const handleChange = (field) => {
         return (e) => {
             console.log(e)
-            const newObj = Object.assign({}, user, { [field]: e.target.value })
+            console.log(e.target.checked)
+            console.log(e.target.value)
+            console.log(user.notifications)
+
+            let newObj;
+
+            if (field === "notifications") {
+                if (e.target.checked) {
+                    newObj = Object.assign({}, user, { [field]: true })
+                } else {
+                    newObj = Object.assign({}, user, { [field]: false })
+                }
+            } else {
+                newObj = Object.assign({}, user, { [field]: e.target.value })
+            }
             setUser(newObj)
         }
     }
+    
+    // const [isSubscribed, setIsSubscribed] = useState(false)
+
+    // const handleSubscribe = () => {
+    //     setIsSubscribed(current => !current)
+    // }
+
 
     const handleSubmit = (e) => {
         console.log("hit handleSubmit")
+        console.log(user)
 
         e.preventDefault()
         let errors = validate()
@@ -94,31 +116,35 @@ function Form(props) {
                     value={user.phoneNumber}
                     onChange={handleChange("phoneNumber")}
                 />
-                <select name="phoneType" id="phoneType" value={user.phoneType}>
+                <select name="phoneType" id="phoneType" value={user.phoneType} onChange={handleChange("phoneType")}>
                     <option value="home">home</option>
                     <option value="work">work</option>
                     <option value="mobile">mobile</option>
                 </select>
+
                 <input
                     type="radio"
                     id="student"
                     name="staff"
                     value="student"
+                    onChange={handleChange("staff")}
                 /> student
                 <input
                     type="radio"
                     id="instructor"
                     name="staff"
                     value="instructor"
+                    onChange={handleChange("staff")}
                 /> instructor
 
-                <textarea id="bio" name="bio" value={user.bio}>
+                <textarea id="bio" name="bio" value={user.bio} onChange={handleChange("bio")}>
                 </textarea>
 
                 <input
                     type="checkbox"
                     id="notifications"
                     value={user.notifications}
+                    onChange={handleChange("notifications")}
                 />
                 <button>Submit</button>
             </form>
