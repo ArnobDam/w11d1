@@ -1,6 +1,6 @@
-import React, {useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 
-function Form (props) {
+function Form(props) {
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -11,26 +11,88 @@ function Form (props) {
         notifications: ""
     })
 
+    const [errors, setErrors] = useState([]);
 
+    const validate = () => {
+        let errors = []
+
+        if (user.name.length === 0) {
+            errors.push("Name can't be blank")
+        }
+
+        if (user.email.length === 0) {
+            errors.push("Email can't be blank")
+        } else if (user.email.split("@").length !== 2) {
+            errors.push("Email should be properly formatted with @")
+        } else if (user.email.split(".").length !== 2) {
+            errors.push("Email should be properly formatted with .com, .net, etc")
+        }
+
+        if (user.phoneNumber.split("-").length !== 3) {
+            errors.push("Format phone number like 888-888-8888")
+        } else if (user.phoneNumber.length !== 12) {
+            errors.push("Enter valid phone number")
+        }
+
+        if (user.bio.length > 280) {
+            errors.push("Bio has character limit of 280.")
+        }
+
+        return errors
+    }
+
+    const handleChange = (field) => {
+        return (e) => {
+            console.log(e)
+            const newObj = Object.assign({}, user, { [field]: e.target.value })
+            setUser(newObj)
+        }
+    }
+
+    const handleSubmit = (e) => {
+        console.log("hit handleSubmit")
+
+        e.preventDefault()
+        let errors = validate()
+
+
+
+        if (errors.length) {
+            setErrors(errors)
+        }
+    }
+
+    const showErrors = () => {
+        if (!errors.length) return null;
+        return (
+            <ul>
+                {errors.map(error => <li>{error}</li>)}
+            </ul>
+        )
+    }
 
     return (
         <>
-            <form className="form"> 
+            {showErrors()}
+            <form className="form" onSubmit={handleSubmit}>
                 <h1>Sign Up</h1>
                 <input
-                type="text"
-                placeholder="name"
-                value={user.name}
+                    type="text"
+                    placeholder="name"
+                    value={user.name}
+                    onChange={handleChange("name")}
                 />
                 <input
-                type="text"
-                placeholder="email"
-                value={user.email}
+                    type="text"
+                    placeholder="email"
+                    value={user.email}
+                    onChange={handleChange("email")}
                 />
                 <input
-                type="text"
-                placeholder="phone number"
-                value={user.phoneNumber}
+                    type="text"
+                    placeholder="XXX-XXX-XXXX"
+                    value={user.phoneNumber}
+                    onChange={handleChange("phoneNumber")}
                 />
                 <select name="phoneType" id="phoneType" value={user.phoneType}>
                     <option value="home">home</option>
@@ -40,11 +102,13 @@ function Form (props) {
                 <input
                     type="radio"
                     id="student"
+                    name="staff"
                     value="student"
                 /> student
                 <input
-                    type = "radio"
-                    id = "instructor"
+                    type="radio"
+                    id="instructor"
+                    name="staff"
                     value="instructor"
                 /> instructor
 
@@ -52,10 +116,11 @@ function Form (props) {
                 </textarea>
 
                 <input
-                type = "checkbox"
-                id="notifications"
-                value={user.notifications}
+                    type="checkbox"
+                    id="notifications"
+                    value={user.notifications}
                 />
+                <button>Submit</button>
             </form>
         </>
     )
